@@ -2,10 +2,12 @@
 const CACHE = "nihongo-pocket-v2";
 const ASSETS = [
   "./",
-  "index.html",
   "css/styles.css",
   "js/data.js",
+  "js/legal.js",
+  "js/pix.js",
   "js/app.js",
+  "vendor/qrcode-generator.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",
@@ -33,10 +35,10 @@ self.addEventListener("fetch", (event) => {
       const cached = await cache.match(request, { ignoreSearch: true });
       const fresh = fetch(request)
         .then((response) => {
-          if (response.ok) cache.put(request, response.clone());
+          if (response.ok && !response.redirected) cache.put(request, response.clone());
           return response;
         })
-        .catch(() => cached || cache.match("index.html"));
+        .catch(() => cached || cache.match("./"));
       return cached || fresh;
     })
   );

@@ -75,11 +75,11 @@
     const head = g.title ? `<h2>${LABEL[g.type] ? LABEL[g.type] + " · " : ""}${esc(g.title)}</h2>` : "";
     let body = "";
     if (g.type === "say" || g.type === "hear") body = `<div class="stack">${g.items.map((it) => itemHTML(it)).join("")}</div>`;
-    else if (g.type === "signs" || g.type === "vocab") body = `<div class="${g.cols === 4 ? "grid4" : "grid2"}">${g.items.map((it) => signHTML(it)).join("")}</div>`;
+    else if (g.type === "signs" || g.type === "vocab") body = `<div class="${g.cols ? "grid" + g.cols : "grid2"}">${g.items.map((it) => (it ? signHTML(it) : "<span></span>")).join("")}</div>`;
     else if (g.type === "tip") return `<aside class="note-box"><h3>${esc(g.title)}</h3><p>${g.text}</p></aside>`;
     else if (g.type === "steps") return `<ol class="steps">${g.items.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`;
     else if (g.type === "table") body = `<div class="tablewrap"><table><thead><tr>${g.head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${g.rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-    else if (g.type === "dialog") body = `<div class="dialog">${g.lines.map(([who, jp, ro, pt]) => `<div class="bubble ${who}" data-say="${esc(jp)}"><small>${who === "e" ? "ELES" : "VOCÊ"}</small><p class="jp" lang="ja">${esc(jp)}</p><p class="ro">${esc(ro)}</p><p class="pt">${esc(pt)}</p></div>`).join("")}</div>`;
+    else if (g.type === "dialog") body = `<div class="dialog"><button class="listen" data-roleplay aria-pressed="false">Praticar: esconder minhas falas</button>${g.lines.map(([who, jp, ro, pt]) => `<div class="bubble ${who}" data-say="${esc(jp)}"><small>${who === "e" ? "ELES" : "VOCÊ"}</small><p class="jp" lang="ja">${esc(jp)}</p><p class="ro">${esc(ro)}</p><p class="pt">${esc(pt)}</p></div>`).join("")}</div>`;
     else if (g.type === "tool") body = `<div class="calc"><label for="yen">Digite o valor da etiqueta</label><div class="field"><input id="yen" inputmode="numeric" autocomplete="off" placeholder="1280" maxlength="9"><span class="yen">円</span></div><output id="yen-out" for="yen"></output></div>`;
     return `<section class="group ${g.type}" id="g${n}">${head}${body}</section>`;
   };
@@ -110,15 +110,18 @@
     const main = SECTIONS.filter((s) => !s.learn);
     const learn = SECTIONS.filter((s) => s.learn);
     const first = main[0];
+    const ess = new Set(ALL.filter((it) => it.k === "say" && it.ess).map((it) => it.key));
+    const done = [...ess].filter((key) => known.has(key)).length;
     return `
       <a class="tile wide" href="#/s/${first.id}"><span><b>${esc(first.title)}</b><small>As 16 frases que resolvem quase tudo</small></span><span class="jp" lang="ja">${first.jp}</span></a>
+      <a class="progress" href="#/treinar"><span>Frases essenciais que você já sabe</span><b>${done} de ${ess.size}</b><div class="bar"><i style="width:${(done / ess.size) * 100}%"></i></div></a>
       <p class="eyebrow">Onde você está?</p>
       <div class="tiles">${main.slice(1).map((s) => `<a class="tile" href="#/s/${s.id}"><span class="jp" lang="ja">${s.jp}</span><b>${esc(s.title)}</b></a>`).join("")}</div>
       <p class="eyebrow">Para estudar</p>
       <div class="tiles">${learn.map((s) => `<a class="tile plain" href="#/s/${s.id}"><span class="jp" lang="ja">${s.jp}</span><b>${esc(s.title)}</b></a>`).join("")}</div>
       <p class="legend"><span><i style="background:var(--red)"></i>Vermelho: você diz</span><span><i style="background:var(--blue)"></i>Azul: você ouve</span><span>Toque numa frase para mostrá-la em tela cheia</span></p>
       <div class="install" id="install" hidden><span>Use como app, sem internet.</span><button class="btn small" id="install-btn">Instalar</button></div>
-      <p class="foot">Nihongo Pocket · funciona offline depois da primeira visita</p>`;
+      <p class="foot">Nihongo Pocket · funciona offline depois da primeira visita<br><a href="#/apoiar">Apoiar</a> · <a href="#/termos">Termos</a> · <a href="#/privacidade">Privacidade</a></p>`;
   };
 
   const search = (query) => {
@@ -126,7 +129,8 @@
     if (!words.length) return [];
     const seen = new Set();
     const rank = (it) => (it.ess ? 0 : it.k === "say" ? 1 : it.k === "hear" ? 2 : 3);
-    return ALL.filter((it) => words.every((w) => it.q.includes(w)))
+    // as letras soltas das tabelas de kana ficam fora: casariam com quase toda busca
+    return ALL.filter((it) => (it.pt || it.sec !== "kana") && words.every((w) => it.q.includes(w)))
       .sort((a, b) => rank(a) - rank(b))
       .filter((it) => !seen.has(it.key) && seen.add(it.key));
   };
@@ -200,36 +204,51 @@
   };
 
   // ---------- Treinar ----------
+  // `any` = o grupo não depende da situação escolhida; `make` = cartões sorteados na hora
   const TYPES = [
     { id: "ess", name: "Essenciais", desc: "O que você mais vai falar", test: (it) => it.k === "say" && it.ess },
     { id: "say", name: "Falar", desc: "Todas as suas falas", test: (it) => it.k === "say" },
     { id: "hear", name: "Entender", desc: "O que você vai ouvir", test: (it) => it.k === "hear" },
     { id: "sign", name: "Placas e palavras", desc: "Kanji e vocabulário", test: (it) => it.k === "sign" && it.pt },
+    { id: "price", name: "Preços", desc: "Ler etiquetas em voz alta", any: true, make: true },
+    { id: "kana", name: "Kana", desc: "Hiragana e katakana", any: true, test: (it) => it.sec === "kana" && !it.pt },
   ];
   const train = { type: "ess", scope: "all", skip: true, session: null };
   const ROUND = 15;
+  const typeNow = () => TYPES.find((t) => t.id === train.type);
 
   const deckFor = () => {
-    const type = TYPES.find((t) => t.id === train.type);
+    const type = typeNow();
+    if (type.make) return [];
     const seen = new Set();
     return ALL.filter((it) => type.test(it)
-      && (train.scope === "all" || (train.scope === "fav" ? favs.has(it.key) : it.sec === train.scope))
+      && (type.any || train.scope === "all" || (train.scope === "fav" ? favs.has(it.key) : it.sec === train.scope))
       && !seen.has(it.key) && seen.add(it.key));
   };
   const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
+  // Preços com cara de etiqueta: de moeda de konbini a compra grande
+  const randomPrices = (count) => {
+    const pick = (min, max, step) => min + step * Math.floor(Math.random() * ((max - min) / step + 1));
+    const makers = [() => pick(100, 990, 10), () => pick(1000, 9900, 100), () => pick(1000, 9990, 10), () => pick(10000, 30000, 500)];
+    const seen = new Set();
+    while (seen.size < count) seen.add(makers[seen.size % makers.length]());
+    return shuffle([...seen]).map((n) => ({ k: "price", key: "price|" + n, jp: n.toLocaleString("pt-BR") + "円", ro: readNumber(n) + " en", say: n + "円", secTitle: "Números e dinheiro" }));
+  };
+
   const renderTrainSetup = () => {
+    const type = typeNow();
     const deck = deckFor();
     const done = deck.filter((it) => known.has(it.key)).length;
-    const pool = train.skip ? deck.length - done : deck.length;
+    const pool = type.make ? ROUND : train.skip ? deck.length - done : deck.length;
     app.innerHTML = pageHead("Treinar", "") + `
       <div class="form">
-        <div><p class="lbl">O que treinar</p><div class="seg">${TYPES.map((t) => `<button data-type="${t.id}" class="${t.id === train.type ? "on" : ""}"><b>${t.name}</b><small>${t.desc}</small></button>`).join("")}</div></div>
-        <div><p class="lbl"><label for="scope">De onde</label></p><select id="scope">
+        <div><p class="lbl">O que treinar</p><div class="seg">${TYPES.map((t) => `<button data-type="${t.id}" class="${t.id === train.type ? "on" : ""}" aria-pressed="${t.id === train.type}"><b>${t.name}</b><small>${t.desc}</small></button>`).join("")}</div></div>
+        <div${type.any ? " hidden" : ""}><p class="lbl"><label for="scope">De onde</label></p><select id="scope">
           <option value="all">Todas as situações</option><option value="fav">Só as salvas</option>
           ${SECTIONS.filter((s) => !s.learn).map((s) => `<option value="${s.id}">${esc(s.title)}</option>`).join("")}</select></div>
-        <label class="check"><input type="checkbox" id="skip"${train.skip ? " checked" : ""}> Pular as que eu já sei</label>
-        <p class="count" style="margin:0">${deck.length} cartões neste grupo · ${done} já sabidos</p>
+        <label class="check"${type.make ? " hidden" : ""}><input type="checkbox" id="skip"${train.skip ? " checked" : ""}> Pular as que eu já sei</label>
+        <p class="count" style="margin:0">${type.make ? "Preços sorteados a cada rodada. Leia em voz alta antes de conferir." : `${deck.length} cartões neste grupo · ${done} já sabidos`}</p>
         <button class="btn" id="start"${pool ? "" : " disabled"}>${pool ? `Começar rodada de ${Math.min(ROUND, pool)}` : deck.length ? "Você já sabe todas" : "Nenhum cartão aqui"}</button>
         ${known.size ? '<button class="linkbtn" id="reset">Zerar o que marquei como sabido</button>' : ""}
       </div>`;
@@ -238,19 +257,20 @@
     $("#skip").addEventListener("change", (e) => { train.skip = e.target.checked; renderTrainSetup(); });
     app.querySelectorAll("[data-type]").forEach((b) => b.addEventListener("click", () => { train.type = b.dataset.type; renderTrainSetup(); }));
     $("#start").addEventListener("click", () => {
-      const cards = shuffle(deckFor().filter((it) => !train.skip || !known.has(it.key))).slice(0, ROUND);
-      train.session = { queue: cards, total: cards.length, right: 0, open: false };
+      const cards = type.make ? randomPrices(ROUND) : shuffle(deckFor().filter((it) => !train.skip || !known.has(it.key))).slice(0, ROUND);
+      train.session = { queue: cards, total: cards.length, right: 0, open: false, missed: new Set() };
       renderTrain();
     });
     const reset = $("#reset");
     if (reset) reset.addEventListener("click", () => { known.clear(); store.set("np.known", known); renderTrainSetup(); });
   };
 
-  const listenBtn = (it) => (canSpeak ? `<button class="listen" data-say="${esc(it.jp)}">${ICON.sound} Ouvir</button>` : "");
+  const listenBtn = (it) => (canSpeak ? `<button class="listen" data-say="${esc(it.say || it.jp)}">${ICON.sound} Ouvir</button>` : "");
   const cardHTML = (it, open) => {
     if (it.k === "say") return `<p class="q">Como se diz?</p><p class="big">${esc(it.pt)}</p>${it.note ? `<p class="note">${esc(it.note)}</p>` : ""}${open ? `<hr><div class="ans"><p class="jp big" lang="ja">${esc(it.jp)}</p><p class="ro">${esc(it.ro)}</p>${listenBtn(it)}</div>` : ""}`;
     if (it.k === "hear") return `<p class="q">Você ouve isto. O que é?</p><p class="jp big" lang="ja">${esc(it.jp)}</p><p class="ro blue">${esc(it.ro)}</p>${listenBtn(it)}${open ? `<hr><div class="ans"><p class="big">${esc(it.pt)}</p>${it.reply ? `<p class="q" style="margin-top:8px">Você responde</p><p class="jp" lang="ja" style="font-size:20px">${esc(it.reply.jp)}</p><p class="ro">${esc(it.reply.ro)}</p><p class="note">${esc(it.reply.pt)}</p>` : `<p class="note">${esc(it.tip)}</p>`}</div>` : ""}`;
-    return `<p class="q">O que significa?</p><p class="jp big" lang="ja" style="font-size:44px">${esc(it.jp)}</p>${open ? `<hr><div class="ans"><p class="ro" style="color:var(--gold)">${esc(it.ro)}</p><p class="big">${esc(it.pt)}</p>${listenBtn(it)}</div>` : ""}`;
+    if (it.k === "price") return `<p class="q">Como se fala este preço?</p><p class="jp big" lang="ja" style="font-size:44px">${esc(it.jp)}</p>${open ? `<hr><div class="ans"><p class="ro">${esc(it.ro)}</p>${listenBtn(it)}</div>` : ""}`;
+    return `<p class="q">${it.pt ? "O que significa?" : "Como se lê?"}</p><p class="jp big" lang="ja" style="font-size:${it.pt ? 44 : 72}px">${esc(it.jp)}</p>${open ? `<hr><div class="ans"><p class="ro" style="color:var(--gold)">${esc(it.ro)}</p>${it.pt ? `<p class="big">${esc(it.pt)}</p>` : ""}${listenBtn(it)}</div>` : ""}`;
   };
 
   const renderTrain = () => {
@@ -263,7 +283,7 @@
       return;
     }
     const it = s.queue[0];
-    const doneCount = s.total - new Set(s.queue.map((c) => c.key)).size;
+    const doneCount = s.total - s.queue.length;
     app.innerHTML = pageHead("Treinar", "") + `
       <div class="bar"><i style="width:${(doneCount / s.total) * 100}%"></i></div>
       <p class="count" style="margin-top:8px">${doneCount} de ${s.total} · ${esc(it.secTitle)}</p>
@@ -273,20 +293,135 @@
         : '<button class="btn" id="reveal">Mostrar resposta</button>'}</div>
       <button class="linkbtn" id="quit" style="display:block;margin:10px auto 0">Encerrar rodada</button>`;
     const on = (id, fn) => { const el = $(id); if (el) el.addEventListener("click", fn); };
+    const remember = it.k !== "price";
     on("#reveal", () => { s.open = true; renderTrain(); });
     on("#hit", () => {
       s.queue.shift();
-      if (!it.missed) s.right++;
-      known.add(it.key); store.set("np.known", known);
+      if (!s.missed.has(it.key)) s.right++;
+      if (remember) { known.add(it.key); store.set("np.known", known); }
       s.open = false; renderTrain();
     });
     on("#miss", () => {
-      it.missed = true;
+      s.missed.add(it.key);
       s.queue.push(s.queue.shift());
-      known.delete(it.key); store.set("np.known", known);
+      if (remember) { known.delete(it.key); store.set("np.known", known); }
       s.open = false; renderTrain();
     });
-    on("#quit", () => { s.queue.forEach((c) => delete c.missed); train.session = null; renderTrainSetup(); });
+    on("#quit", () => { train.session = null; renderTrainSetup(); });
+  };
+
+  // ---------- Apoiar, termos e privacidade ----------
+  const money = (value) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  let qrLoading = null;
+  const loadQr = () => qrLoading || (qrLoading = new Promise((resolve) => {
+    if (window.qrcode) return resolve(true);
+    const script = document.createElement("script");
+    script.src = "vendor/qrcode-generator.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => { qrLoading = null; resolve(false); };
+    document.head.appendChild(script);
+  }));
+
+  // QR Code em SVG, sempre preto no branco e com margem de 4 módulos, para o leitor do banco reconhecer
+  const QUIET_ZONE = 4;
+  const qrSvg = (value) => {
+    const qr = window.qrcode(0, "M");
+    qr.addData(value);
+    qr.make();
+    const count = qr.getModuleCount();
+    const total = count + QUIET_ZONE * 2;
+    let path = "";
+    for (let row = 0; row < count; row += 1) {
+      for (let column = 0; column < count; column += 1) {
+        if (qr.isDark(row, column)) path += `M${column + QUIET_ZONE} ${row + QUIET_ZONE}h1v1h-1z`;
+      }
+    }
+    return `<svg class="pix-qr" width="232" height="232" viewBox="0 0 ${total} ${total}" role="img" aria-label="QR Code do Pix" shape-rendering="crispEdges"><rect width="${total}" height="${total}" fill="#ffffff"/><path d="${path}" fill="#000000"/></svg>`;
+  };
+
+  const renderDonate = () => {
+    setTab("");
+    const { DONATION, parseAmount, donationCode } = window.Pix;
+    const state = { preset: null, text: "" };
+    app.innerHTML = pageHead("Apoiar", "") + `
+      <div class="prose">
+        <p>Fiz o Nihongo Pocket sozinho, para a minha própria viagem ao Japão, e deixei aberto para quem mais precisar. Ele é gratuito, não tem anúncios e não pede cadastro.</p>
+        <p>Se ele foi útil e você quiser apoiar o meu trabalho, pode doar qualquer valor por Pix. Doar é opcional e não libera nada: o app é o mesmo para todo mundo.</p>
+      </div>
+      <section class="donate" aria-label="Doar por Pix">
+        <p class="receiver">Recebedor: <b>${esc(DONATION.receiverFullName)}</b></p>
+        <div class="amounts" role="group" aria-label="Valor">
+          ${DONATION.suggestedAmounts.map((value) => `<button data-amt="${value}">${money(value)}</button>`).join("")}
+          <button data-amt="custom">Outro valor</button>
+          <button data-amt="none">Decidir no banco</button>
+        </div>
+        <label class="custom" id="don-custom-box" hidden>Valor em reais
+          <input id="don-custom" inputmode="decimal" autocomplete="off" placeholder="Ex.: 15,00">
+          <small id="don-err" hidden>Use só números, como 15 ou 15,50 (máximo de ${money(DONATION.maxAmount)}).</small>
+        </label>
+        <div class="pixcode">
+          <div id="don-qr"></div>
+          <p id="don-line"></p>
+          <code id="don-code"></code>
+          <button class="btn" id="don-copy">Copiar código Pix</button>
+        </div>
+        <p class="note-box" id="don-thanks" role="status" hidden><b>Muito obrigado!</b> Agora é só colar o código no Pix do seu banco. O app não fica sabendo se o pagamento foi feito, então o agradecimento já fica aqui.</p>
+        <ol class="donsteps">
+          <li>No app do seu banco, abra o Pix e escolha <b>Ler QR Code</b> ou <b>Pix Copia e Cola</b>.</li>
+          <li>Confira o nome do recebedor: <b>${esc(DONATION.receiverFullName)}</b>. Se aparecer outro nome, não confirme.</li>
+          <li>Confirme o valor e conclua. Muito obrigado.</li>
+        </ol>
+      </section>
+      <p class="foot"><a href="#/termos">Termos de uso</a> · <a href="#/privacidade">Privacidade</a></p>`;
+
+    const update = () => {
+      const amount = state.preset === "custom" ? parseAmount(state.text) : state.preset;
+      const code = donationCode(amount);
+      app.querySelectorAll("[data-amt]").forEach((b) => {
+        const mine = b.dataset.amt === "none" ? null : b.dataset.amt === "custom" ? "custom" : Number(b.dataset.amt);
+        b.classList.toggle("on", mine === state.preset);
+        b.setAttribute("aria-pressed", mine === state.preset);
+      });
+      $("#don-custom-box").hidden = state.preset !== "custom";
+      $("#don-err").hidden = !(state.preset === "custom" && state.text && amount === null);
+      $("#don-line").innerHTML = amount ? `Valor: <b>${money(amount)}</b>` : "Você escolhe o valor no app do banco.";
+      $("#don-code").textContent = code;
+      loadQr().then((ok) => {
+        const box = $("#don-qr");
+        if (box && ok && $("#don-code").textContent === code) box.innerHTML = qrSvg(code);
+      });
+    };
+    app.querySelectorAll("[data-amt]").forEach((b) => b.addEventListener("click", () => {
+      state.preset = b.dataset.amt === "none" ? null : b.dataset.amt === "custom" ? "custom" : Number(b.dataset.amt);
+      update();
+      if (state.preset === "custom") $("#don-custom").focus();
+    }));
+    $("#don-custom").addEventListener("input", (e) => { state.text = e.target.value; update(); });
+    $("#don-copy").addEventListener("click", async () => {
+      const button = $("#don-copy");
+      try {
+        await navigator.clipboard.writeText($("#don-code").textContent);
+        button.textContent = "Código copiado";
+        $("#don-thanks").hidden = false;
+        setTimeout(() => { if (button.isConnected) button.textContent = "Copiar código Pix"; }, 2500);
+      } catch {
+        // sem permissão de área de transferência: seleciona o código para copiar à mão
+        const range = document.createRange();
+        range.selectNodeContents($("#don-code"));
+        const selection = getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        button.textContent = "Selecionado: copie o código acima";
+      }
+    });
+    update();
+  };
+
+  const renderLegal = (id) => {
+    setTab("");
+    const page = LEGAL[id];
+    app.innerHTML = pageHead(page.title, "") + `<article class="prose"><p class="count">Atualizado em ${SITE.legalUpdated}</p>${page.html}</article>
+      <p class="foot"><a href="#/apoiar">Apoiar</a> · <a href="#/termos">Termos de uso</a> · <a href="#/privacidade">Privacidade</a></p>`;
   };
 
   // ---------- Tela cheia ----------
@@ -335,6 +470,16 @@
     if (go) return document.getElementById(go.dataset.go).scrollIntoView({ block: "start" });
     const ph = e.target.closest(".ph[data-i]");
     if (ph) return openShow(ALL[+ph.dataset.i]);
+    const role = e.target.closest("[data-roleplay]");
+    if (role) {
+      const hiding = role.parentElement.classList.toggle("hide-v");
+      role.setAttribute("aria-pressed", hiding);
+      role.textContent = hiding ? "Mostrar minhas falas" : "Praticar: esconder minhas falas";
+      role.parentElement.querySelectorAll(".seen").forEach((b) => b.classList.remove("seen"));
+      return;
+    }
+    const veiled = e.target.closest(".hide-v .bubble.v:not(.seen)");
+    if (veiled) return veiled.classList.add("seen");
     const say = e.target.closest("[data-say]");
     if (say) return speak(say.dataset.say);
   });
@@ -360,17 +505,30 @@
   window.addEventListener("appinstalled", () => { deferredInstall = null; syncInstall(); });
 
   // ---------- Rotas ----------
-  const route = () => {
+  const route = (restoreTo) => {
     const [name, arg] = location.hash.replace(/^#\/?/, "").split("/");
     if (name === "s") renderSection(arg);
     else if (name === "buscar") renderHome(true);
     else if (name === "treinar") renderTrain();
     else if (name === "salvos") renderFavs();
+    else if (name === "apoiar") renderDonate();
+    else if (name === "termos" || name === "privacidade") renderLegal(name);
     else renderHome(false);
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: restoreTo || 0, behavior: "instant" });
   };
+
+  // Ao voltar para a tela anterior, retoma a rolagem de onde a pessoa estava
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  const trail = [location.hash];
+  const scrollOf = {};
   window.addEventListener("popstate", () => { if (shown) closeShow(); });
-  window.addEventListener("hashchange", () => { closeShow(); route(); });
+  window.addEventListener("hashchange", () => {
+    closeShow();
+    scrollOf[trail[trail.length - 1]] = window.scrollY;
+    const back = trail.length > 1 && trail[trail.length - 2] === location.hash;
+    if (back) trail.pop(); else trail.push(location.hash);
+    route(back ? scrollOf[location.hash] : 0);
+  });
   route();
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {
