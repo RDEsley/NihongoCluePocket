@@ -1,6 +1,6 @@
 {
   "name": "nihongo-pocket",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Cola de bolso de japonês para viagem: PWA offline, sem build e sem dependências.",
   "private": true,
   "license": "MIT",
