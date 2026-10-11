@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nihongo Pocket</title>
+  <meta name="description" content="Cola de bolso de japonês para viagem: o que eles dizem, o que você responde, busca rápida e treino. Funciona offline.">
+  <meta name="theme-color" content="#c5372c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Nihongo Pocket">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app" tabindex="-1"></main>
+
+  <nav class="tabbar" aria-label="Principal">
+    <a href="#/" data-tab="home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg>
+      <span>Cola</span>
+    </a>
+    <a href="#/buscar" data-tab="buscar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <span>Buscar</span>
+    </a>
+    <a href="#/treinar" data-tab="treinar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="7" width="13" height="13" rx="2"/><path d="M8 7V5.5a1.5 1.5 0 0 1 1.5-1.5H19a1.5 1.5 0 0 1 1.5 1.5V15a1.5 1.5 0 0 1-1.5 1.5h-2.5"/></svg>
+      <span>Treinar</span>
+    </a>
+    <a href="#/salvos" data-tab="salvos">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 17l-5.2 2.8 1-5.8-4.2-4.1 5.8-.8z"/></svg>
+      <span>Salvos</span>
+    </a>
+  </nav>
+
+  <div id="show" class="show" hidden role="dialog" aria-modal="true" aria-label="Frase em tela cheia"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
