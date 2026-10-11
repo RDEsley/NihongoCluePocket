@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/RDEsley/NihongoCluePocket.git"
   },
-  "homepage": "https://nihongo-pocket-ivory.vercel.app",
+  "homepage": "https://nihongo-clue-pocket.vercel.app",
   "scripts": {
     "start": "npx --yes serve -l 4173 .",
     "test": "node --test",

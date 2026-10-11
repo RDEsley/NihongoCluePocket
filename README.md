@@ -9,7 +9,7 @@
 O que eles dizem, o que você responde e como ler as placas.<br>
 Feito para o celular, funciona sem internet e abre na hora.
 
-[![Abrir o app](https://img.shields.io/badge/Abrir_o_app-c5372c?style=for-the-badge&logo=vercel&logoColor=white)](https://nihongo-pocket-ivory.vercel.app)
+[![Abrir o app](https://img.shields.io/badge/Abrir_o_app-c5372c?style=for-the-badge&logo=vercel&logoColor=white)](https://nihongo-clue-pocket.vercel.app)
 
 [![CI](https://github.com/RDEsley/NihongoCluePocket/actions/workflows/ci.yml/badge.svg)](https://github.com/RDEsley/NihongoCluePocket/actions/workflows/ci.yml)
 ![PWA offline](https://img.shields.io/badge/PWA-offline-26497d)
@@ -130,7 +130,7 @@ O QR Code também foi conferido de ponta a ponta: renderizado na tela, capturado
 
 ## Instalando no celular
 
-1. Abra [nihongo-pocket-ivory.vercel.app](https://nihongo-pocket-ivory.vercel.app) no Chrome (Android) ou no Safari (iPhone).
+1. Abra [nihongo-clue-pocket.vercel.app](https://nihongo-clue-pocket.vercel.app) no Chrome (Android) ou no Safari (iPhone).
 2. Toque em **Instalar** na tela inicial do app, ou no menu do navegador escolha **Adicionar à tela inicial**.
 3. Abra uma vez com internet. A partir daí funciona em modo avião.
 

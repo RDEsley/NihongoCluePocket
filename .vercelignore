@@ -5,3 +5,7 @@ docs
 README.md
 AGENTS.md
 package.json
+
+# Nunca publicar o material de origem
+*.pdf
+.vercel

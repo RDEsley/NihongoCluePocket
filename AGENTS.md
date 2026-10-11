@@ -7,7 +7,7 @@ As regras gerais (identidade Git, gatilho "Manda pro GitHub", doações) estão 
 ## Stack
 
 * HTML, CSS e JavaScript puros, sem build, sem framework e sem dependências em produção
-* Hospedagem estática na Vercel, ligada ao GitHub: push em `main` publica em `https://nihongo-pocket-ivory.vercel.app`
+* Hospedagem estática na Vercel, ligada ao GitHub: push em `main` publica em `https://nihongo-clue-pocket.vercel.app`
 * Repositório `https://github.com/RDEsley/NihongoCluePocket`
 * Fontes do sistema, nenhuma requisição externa (precisa abrir sem internet)
 
