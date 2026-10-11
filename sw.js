@@ -1,5 +1,5 @@
 // Offline: tudo é pré-carregado na primeira visita. Ao mudar qualquer arquivo, suba a versão.
-const CACHE = "nihongo-pocket-v2";
+const CACHE = "nihongo-pocket-v3";
 const ASSETS = [
   "./",
   "css/styles.css",

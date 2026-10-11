@@ -11,7 +11,7 @@ Feito para o celular, funciona sem internet e abre na hora.
 
 [![Abrir o app](https://img.shields.io/badge/Abrir_o_app-c5372c?style=for-the-badge&logo=vercel&logoColor=white)](https://nihongo-pocket-ivory.vercel.app)
 
-[![CI](https://github.com/RDEsley/NihongoPocket/actions/workflows/ci.yml/badge.svg)](https://github.com/RDEsley/NihongoPocket/actions/workflows/ci.yml)
+[![CI](https://github.com/RDEsley/NihongoCluePocket/actions/workflows/ci.yml/badge.svg)](https://github.com/RDEsley/NihongoCluePocket/actions/workflows/ci.yml)
 ![PWA offline](https://img.shields.io/badge/PWA-offline-26497d)
 ![Zero dependências](https://img.shields.io/badge/depend%C3%AAncias-0-a26f1f)
 ![Sem build](https://img.shields.io/badge/build-nenhum-1c1b1a)
@@ -105,8 +105,8 @@ HTML, CSS e JavaScript puros. Sem framework, sem etapa de build e sem nenhuma de
 Não há nada para instalar. Qualquer servidor estático serve:
 
 ```bash
-git clone https://github.com/RDEsley/NihongoPocket.git
-cd NihongoPocket
+git clone https://github.com/RDEsley/NihongoCluePocket.git
+cd NihongoCluePocket
 npm start          # sobe em http://localhost:4173
 ```
 

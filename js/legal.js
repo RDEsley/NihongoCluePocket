@@ -4,7 +4,7 @@ const SITE = {
   name: "Nihongo Pocket",
   author: "Richard Esley Silva Oliveira",
   contactEmail: "richardesleyso@gmail.com",
-  repositoryUrl: "https://github.com/RDEsley/NihongoPocket",
+  repositoryUrl: "https://github.com/RDEsley/NihongoCluePocket",
   legalUpdated: "10 de outubro de 2026",
 };
 
