@@ -42,6 +42,7 @@ O CI (`.github/workflows/ci.yml`) roda `check` e `test` a cada push
 * Doações: não troque chave, nome ou cidade em `js/pix.js`. Depois de mexer no Pix ou no QR, além de `npm test`, decodifique o QR Code renderizado na tela e compare com o código exibido (teste 3 do `DOACOES.md`)
 * O coração toca uma vez, dos quadros 40 a 330, e fica na tela: o `heart.json` original termina fazendo-o sumir. Os originais das animações ficam em `OneDrive/Documents/Fate Eight - One Drive/Animations`
 * O nome do app é Nihongo Clue Pocket; o txid do Pix continua `NIHONGOPOCKET` para não mudar o identificador no extrato
+* Atualização: o `sw.js` novo fica em espera e `js/app.js` mostra o aviso com "Atualizar" e um X (dispensa só em memória, volta ao reabrir o app). O `fetch` responde apenas do cache da versão, sem atualizar em segundo plano
 * O service worker só registra em HTTPS; o modo offline é testado no deploy
 * Os PDFs de origem ficam fora do repositório (`.gitignore`); `.vercelignore` tira testes e documentação da hospedagem
 * Capturas do README: Chrome headless com `--window-size=500,1000 --force-device-scale-factor=2`, salvando fora de pastas com espaço no caminho e copiando depois
