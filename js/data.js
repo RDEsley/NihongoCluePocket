@@ -5,6 +5,10 @@ const S = (jp, ro, pt, note, ess) => ({ k: "say", jp, ro, pt, note: note || "", 
 const H = (jp, ro, pt, tip, reply) => ({ k: "hear", jp, ro, pt, tip: tip || "", reply: reply || null });
 const P = (jp, ro, pt) => ({ k: "sign", jp, ro, pt });
 
+// Tabela de kana em 5 colunas (a i u e o); "・" e "-" marcam as casas vazias
+const KANA_RO = "a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya - yu - yo ra ri ru re ro wa - - - o n".split(" ");
+const kana = (chars) => [...chars].map((c, i) => (c === "・" ? null : P(c, KANA_RO[i], "")));
+
 const SECTIONS = [
   {
     id: "basico", title: "Kit de sobrevivência", jp: "基本",
@@ -708,6 +712,31 @@ const SECTIONS = [
       { type: "tip", title: "Sem sílaba forte", text: "Em português a gente carrega uma sílaba: “ari<b>GÁ</b>to”. Em japonês todas têm o mesmo peso e a mesma duração: <b>a-ri-ga-to-o</b>. Fale plano, como quem soletra. É o ajuste que mais muda o seu sotaque." },
       { type: "tip", title: "Pergunta", text: "Toda pergunta educada termina em <b>ka</b>, com a voz subindo: <b>Doko desu ka?</b> Não precisa de ponto de interrogação na entonação do resto da frase." },
       { type: "tip", title: "Partículas", text: "São escritas de um jeito e lidas de outro: は se lê <b>wa</b>, を se lê <b>o</b>, へ se lê <b>e</b>. O rōmaji do app já vem do jeito que se fala." },
+    ],
+  },
+  {
+    id: "kana", title: "Ler kana", jp: "かな", learn: true,
+    intro: "Você não precisa disto para viajar. Mas o voo é longo: com o katakana você lê boa parte dos cardápios e das placas, porque as palavras estrangeiras são escritas nele.",
+    groups: [
+      { type: "tip", title: "Três escritas misturadas", text: "<b>Hiragana</b> (arredondado: あ) escreve as partículas e as terminações. <b>Katakana</b> (reto: ア) escreve palavras estrangeiras, quase sempre vindas do inglês. <b>Kanji</b> (漢字) são os ideogramas. As duas primeiras têm os mesmos 46 sons; comece pelo katakana, que rende mais na viagem." },
+      { type: "vocab", title: "Katakana", cols: 5, items: kana("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤ・ユ・ヨラリルレロワ・・・ヲン") },
+      { type: "vocab", title: "Hiragana", cols: 5, items: kana("あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもや・ゆ・よらりるれろわ・・・をん") },
+      { type: "table", title: "Marcas que mudam o som", head: ["Marca", "O que faz", "Exemplo"], rows: [
+        ["<b>゛</b> dois tracinhos", "k→g · s→z · t→d · h→b", "か ka → が ga · て te → で de · ほ ho → ぼ bo"],
+        ["<b>゜</b> bolinha", "h→p", "は ha → ぱ pa · ホ ho → ポ po"],
+        ["<b>っ ッ</b> pequeno", "Pausa: dobra a consoante seguinte.", "きっぷ kippu · チケット chiketto"],
+        ["<b>ー</b> traço", "Alonga a vogal (no katakana).", "コーヒー kōhī · カード kādo"],
+        ["<b>ゃ ゅ ょ</b> pequenos", "Fundem com a sílaba anterior.", "きょ kyo · しゃ sha · ちゅ chu"],
+      ]},
+      { type: "vocab", title: "Katakana que você vai ler todo dia", items: [
+        P("コーヒー", "kōhī", "café"), P("ビール", "bīru", "cerveja"), P("ラーメン", "rāmen", "lámen"), P("カレー", "karē", "curry"),
+        P("パン", "pan", "pão"), P("サラダ", "sarada", "salada"), P("ジュース", "jūsu", "suco"), P("ハンバーガー", "hanbāgā", "hambúrguer"),
+        P("チーズ", "chīzu", "queijo"), P("アイス", "aisu", "sorvete"), P("トイレ", "toire", "banheiro"), P("タクシー", "takushī", "táxi"),
+        P("バス", "basu", "ônibus"), P("ホテル", "hoteru", "hotel"), P("エレベーター", "erebētā", "elevador"), P("エスカレーター", "esukarētā", "escada rolante"),
+        P("レストラン", "resutoran", "restaurante"), P("メニュー", "menyū", "cardápio"), P("カード", "kādo", "cartão"), P("チケット", "chiketto", "ingresso / passagem"),
+        P("コンビニ", "konbini", "loja de conveniência"), P("スーパー", "sūpā", "supermercado"), P("ドラッグストア", "doraggusutoa", "drogaria"), P("ブラジル", "Burajiru", "Brasil"),
+      ]},
+      { type: "tip", title: "Como treinar no voo", text: "Em <b>Treinar</b>, escolha <b>Kana</b> e faça rodadas curtas até reconhecer as letras sem pensar. Depois tente ler as palavras acima cobrindo o rōmaji com o dedo." },
     ],
   },
   {
