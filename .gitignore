@@ -426,3 +426,9 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Material de origem (PDFs) fica fora do repositório
+*.pdf
+
+# Vercel
+.vercel
