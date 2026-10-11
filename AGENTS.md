@@ -1,4 +1,4 @@
-# Nihongo Pocket
+# Nihongo Clue Pocket
 
 Cola de bolso de japonês para viagem, em português. PWA estático para celular, feito para funcionar offline (uso no voo e no Japão sem rede). Também serve de portfólio: mantenha README, capturas e histórico apresentáveis
 

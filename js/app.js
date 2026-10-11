@@ -121,7 +121,7 @@
       <div class="tiles">${learn.map((s) => `<a class="tile plain" href="#/s/${s.id}"><span class="jp" lang="ja">${s.jp}</span><b>${esc(s.title)}</b></a>`).join("")}</div>
       <p class="legend"><span><i style="background:var(--red)"></i>Vermelho: você diz</span><span><i style="background:var(--blue)"></i>Azul: você ouve</span><span>Toque numa frase para mostrá-la em tela cheia</span></p>
       <div class="install" id="install" hidden><span>Use como app, sem internet.</span><button class="btn small" id="install-btn">Instalar</button></div>
-      <p class="foot">Nihongo Pocket · funciona offline depois da primeira visita<br><a href="#/apoiar">Apoiar</a> · <a href="#/termos">Termos</a> · <a href="#/privacidade">Privacidade</a></p>`;
+      <p class="foot">Nihongo Clue Pocket · funciona offline depois da primeira visita<br><a href="#/apoiar">Apoiar</a> · <a href="#/termos">Termos</a> · <a href="#/privacidade">Privacidade</a></p>`;
   };
 
   const search = (query) => {
@@ -154,7 +154,7 @@
   const renderHome = (searchMode) => {
     setTab(searchMode ? "buscar" : "home");
     app.innerHTML = `
-      ${searchMode ? "" : `<header class="brand"><h1>Nihongo Pocket</h1><span class="jp" lang="ja">旅の<b>日本語</b></span></header>`}
+      ${searchMode ? "" : `<header class="brand"><h1>Nihongo Clue Pocket</h1><span class="jp" lang="ja">旅の<b>日本語</b></span></header>`}
       <div class="searchbar"><div class="searchbox">${ICON.search}
         <input id="q" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buscar frase, palavra ou placa" aria-label="Buscar" value="${esc(view.query)}">
         <button class="clear" id="q-clear" aria-label="Limpar busca"${view.query ? "" : " hidden"}>×</button>
@@ -345,7 +345,7 @@
     const state = { preset: null, text: "" };
     app.innerHTML = pageHead("Apoiar", "") + `
       <div class="prose">
-        <p>Fiz o Nihongo Pocket sozinho, para a minha própria viagem ao Japão, e deixei aberto para quem mais precisar. Ele é gratuito, não tem anúncios e não pede cadastro.</p>
+        <p>Fiz o Nihongo Clue Pocket sozinho, para a minha própria viagem ao Japão, e deixei aberto para quem mais precisar. Ele é gratuito, não tem anúncios e não pede cadastro.</p>
         <p>Se ele foi útil e você quiser apoiar o meu trabalho, pode doar qualquer valor por Pix. Doar é opcional e não libera nada: o app é o mesmo para todo mundo.</p>
       </div>
       <section class="donate" aria-label="Doar por Pix">

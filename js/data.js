@@ -1,4 +1,4 @@
-// Conteúdo do Nihongo Pocket, transcrito de "Japonês para Viagem" (Guia + Cola de Bolso).
+// Conteúdo do Nihongo Clue Pocket, transcrito de "Japonês para Viagem" (Guia + Cola de Bolso).
 // S = você diz · H = você ouve (com dica ou resposta) · P = placa / palavra
 const E = true;
 const S = (jp, ro, pt, note, ess) => ({ k: "say", jp, ro, pt, note: note || "", ess: !!ess });

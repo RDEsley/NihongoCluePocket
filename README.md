@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="icons/icon-192.png" width="96" height="96" alt="Ícone do Nihongo Pocket">
+<img src="icons/icon-192.png" width="96" height="96" alt="Ícone do Nihongo Clue Pocket">
 
-# Nihongo Pocket
+# Nihongo Clue Pocket
 
 **旅の日本語 · Cola de bolso de japonês para viagem**
 

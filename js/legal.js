@@ -1,7 +1,7 @@
 // Textos de apoio, termos e privacidade. Escritos a partir do que o app realmente faz:
 // ao mudar o comportamento (login, analytics, novos serviços), revise estes textos e a data.
 const SITE = {
-  name: "Nihongo Pocket",
+  name: "Nihongo Clue Pocket",
   author: "Richard Esley Silva Oliveira",
   contactEmail: "richardesleyso@gmail.com",
   repositoryUrl: "https://github.com/RDEsley/NihongoCluePocket",
