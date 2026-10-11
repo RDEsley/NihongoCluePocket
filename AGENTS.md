@@ -16,7 +16,9 @@ As regras gerais (identidade Git, gatilho "Manda pro GitHub", doações) estão 
 * `js/data.js`: todo o conteúdo (`SECTIONS`), transcrito dos PDFs "Japonês para Viagem" (Guia e Cola de Bolso), mais a seção de kana
 * `js/app.js`: rotas por hash (`#/`, `#/s/<id>`, `#/buscar`, `#/treinar`, `#/salvos`, `#/apoiar`, `#/termos`, `#/privacidade`), busca, treino, tela cheia, áudio
 * `js/pix.js`: BR Code do Pix e configuração da doação (txid `NIHONGOPOCKET`); `js/legal.js`: termos e privacidade
-* `vendor/qrcode-generator.js`: biblioteca MIT, carregada sob demanda na tela de apoio
+* `js/invite.js`: convite de apoio (cartão e janela em duas etapas, a partir da 5ª abertura) e as animações de doação
+* `animations/`: aceno (`donation-wave.webp`), potinho (`donation-jar.json`) e coração da recusa (`donation-heart.json`)
+* `vendor/`: `qrcode-generator.js` e `lottie_light.min.js` (ambas MIT), carregadas sob demanda
 * `sw.js`: cache offline; `manifest.webmanifest` e `icons/`: instalação como app
 * `tests/`: `node --test`; `docs/screenshots/`: imagens do README
 
@@ -36,8 +38,10 @@ O CI (`.github/workflows/ci.yml`) roda `check` e `test` a cada push
 * Arquivo novo carregado pela página entra na lista `ASSETS` de `sw.js` (há teste que cobra isso)
 * Em `data.js`: `S` = você diz (vermelho), `H` = você ouve (azul, com dica ou resposta), `P` = placa ou palavra. Use kanji normais, nunca os radicais Kangxi que saem ao copiar texto do PDF (ex.: `日`, não `⽇`)
 * Tabelas e dicas aceitam HTML em `data.js`; frases são escapadas
-* Favoritos e progresso do treino ficam só no `localStorage` do aparelho (`np.fav`, `np.known`); não há servidor, login nem analytics. Se isso mudar, revise `js/legal.js` e a data `legalUpdated`
+* Favoritos e progresso do treino ficam só no `localStorage` do aparelho (`np.fav`, `np.known`), assim como a contagem de aberturas e as escolhas do convite (`np.visits`, `np.invite-seen`, `np.card-hidden`); não há servidor, login nem analytics. Se isso mudar, revise `js/legal.js` e a data `legalUpdated`
 * Doações: não troque chave, nome ou cidade em `js/pix.js`. Depois de mexer no Pix ou no QR, além de `npm test`, decodifique o QR Code renderizado na tela e compare com o código exibido (teste 3 do `DOACOES.md`)
+* O coração toca uma vez, dos quadros 40 a 330, e fica na tela: o `heart.json` original termina fazendo-o sumir. Os originais das animações ficam em `OneDrive/Documents/Fate Eight - One Drive/Animations`
+* O nome do app é Nihongo Clue Pocket; o txid do Pix continua `NIHONGOPOCKET` para não mudar o identificador no extrato
 * O service worker só registra em HTTPS; o modo offline é testado no deploy
 * Os PDFs de origem ficam fora do repositório (`.gitignore`); `.vercelignore` tira testes e documentação da hospedagem
 * Capturas do README: Chrome headless com `--window-size=500,1000 --force-device-scale-factor=2`, salvando fora de pastas com espaço no caminho e copiando depois

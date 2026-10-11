@@ -78,6 +78,7 @@ HTML, CSS e JavaScript puros. Sem framework, sem etapa de build e sem nenhuma de
 - **Offline primeiro.** O [service worker](sw.js) pré-carrega tudo na instalação e responde do cache na hora, atualizando em segundo plano quando há rede.
 - **Sem servidor e sem conta.** Favoritos e progresso ficam no `localStorage` do aparelho. Não há login, analytics, cookies nem requisições externas; as fontes são as do sistema.
 - **Áudio do aparelho.** A pronúncia usa a Web Speech API com a voz japonesa já instalada no celular, então não há arquivos de áudio para baixar.
+- **Convite discreto.** Depois de algumas aberturas o app agradece e pergunta, uma única vez, se a pessoa quer apoiar. Quem recusa recebe um coração e nunca mais vê a janela.
 - **Pix sem intermediário.** A tela de apoio monta o código "Pix Copia e Cola" (BR Code estático, padrão EMV do Banco Central) e o QR Code no próprio navegador. O app não sabe se alguém doou.
 - **Acessível e adaptável.** Tema claro e escuro pelo sistema, foco visível, alvos de toque grandes, navegação por teclado e respeito a `prefers-reduced-motion`.
 
@@ -93,8 +94,10 @@ HTML, CSS e JavaScript puros. Sem framework, sem etapa de build e sem nenhuma de
 │   ├── data.js             todo o conteúdo (situações, frases, placas, kana)
 │   ├── app.js              rotas, telas, busca, treino, tela cheia, áudio
 │   ├── pix.js              BR Code do Pix e configuração da doação
+│   ├── invite.js           convite de apoio e animações de doação
 │   └── legal.js            termos de uso e política de privacidade
-├── vendor/                 qrcode-generator (MIT), carregado só na tela de apoio
+├── animations/             aceno, potinho e coração do convite de apoio
+├── vendor/                 qrcode-generator e lottie-web light (MIT), carregados sob demanda
 ├── icons/                  ícones do app
 ├── tests/                  testes do Pix, do conteúdo e do leitor de preços
 └── docs/screenshots/       imagens deste README
@@ -146,7 +149,7 @@ O app é gratuito e vai continuar assim. Se ele ajudou na sua viagem, há uma te
 
 ## Licença
 
-[MIT](LICENSE) © Richard Oliveira. O QR Code usa [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), de Kazuhiko Arase (MIT).
+[MIT](LICENSE) © Richard Oliveira. O QR Code usa [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), de Kazuhiko Arase, e as animações usam [lottie-web](https://github.com/airbnb/lottie-web), da Airbnb (ambos MIT).
 
 <div align="center">
 <br>
