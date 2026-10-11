@@ -1,0 +1,7 @@
+# Só o app vai para a hospedagem
+tests
+docs
+.github
+README.md
+AGENTS.md
+package.json
