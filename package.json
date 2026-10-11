@@ -1,6 +1,6 @@
 {
   "name": "nihongo-pocket",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cola de bolso de japonês para viagem: PWA offline, sem build e sem dependências.",
   "private": true,
   "license": "MIT",
@@ -13,7 +13,7 @@
   "scripts": {
     "start": "npx --yes serve -l 4173 .",
     "test": "node --test",
-    "check": "node --check js/app.js && node --check js/data.js && node --check js/legal.js && node --check js/pix.js && node --check sw.js"
+    "check": "node --check js/app.js && node --check js/data.js && node --check js/legal.js && node --check js/pix.js && node --check js/invite.js && node --check sw.js"
   },
   "engines": {
     "node": ">=20"

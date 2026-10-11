@@ -121,6 +121,7 @@
       <div class="tiles">${learn.map((s) => `<a class="tile plain" href="#/s/${s.id}"><span class="jp" lang="ja">${s.jp}</span><b>${esc(s.title)}</b></a>`).join("")}</div>
       <p class="legend"><span><i style="background:var(--red)"></i>Vermelho: você diz</span><span><i style="background:var(--blue)"></i>Azul: você ouve</span><span>Toque numa frase para mostrá-la em tela cheia</span></p>
       <div class="install" id="install" hidden><span>Use como app, sem internet.</span><button class="btn small" id="install-btn">Instalar</button></div>
+      ${Invite.cardHTML()}
       <p class="foot">Nihongo Clue Pocket · funciona offline depois da primeira visita<br><a href="#/apoiar">Apoiar</a> · <a href="#/termos">Termos</a> · <a href="#/privacidade">Privacidade</a></p>`;
   };
 
@@ -344,6 +345,7 @@
     const { DONATION, parseAmount, donationCode } = window.Pix;
     const state = { preset: null, text: "" };
     app.innerHTML = pageHead("Apoiar", "") + `
+      <div class="donation-art" id="don-jar" aria-hidden="true"></div>
       <div class="prose">
         <p>Fiz o Nihongo Clue Pocket sozinho, para a minha própria viagem ao Japão, e deixei aberto para quem mais precisar. Ele é gratuito, não tem anúncios e não pede cadastro.</p>
         <p>Se ele foi útil e você quiser apoiar o meu trabalho, pode doar qualquer valor por Pix. Doar é opcional e não libera nada: o app é o mesmo para todo mundo.</p>
@@ -365,7 +367,7 @@
           <code id="don-code"></code>
           <button class="btn" id="don-copy">Copiar código Pix</button>
         </div>
-        <p class="note-box" id="don-thanks" role="status" hidden><b>Muito obrigado!</b> Agora é só colar o código no Pix do seu banco. O app não fica sabendo se o pagamento foi feito, então o agradecimento já fica aqui.</p>
+        <div class="note-box thanks" id="don-thanks" role="status" hidden>${Invite.waveArt("thanks-art")}<p><b>Muito obrigado!</b> Agora é só colar o código no Pix do seu banco. O app não fica sabendo se o pagamento foi feito, então o agradecimento já fica aqui.</p></div>
         <ol class="donsteps">
           <li>No app do seu banco, abra o Pix e escolha <b>Ler QR Code</b> ou <b>Pix Copia e Cola</b>.</li>
           <li>Confira o nome do recebedor: <b>${esc(DONATION.receiverFullName)}</b>. Se aparecer outro nome, não confirme.</li>
@@ -403,6 +405,7 @@
         await navigator.clipboard.writeText($("#don-code").textContent);
         button.textContent = "Código copiado";
         $("#don-thanks").hidden = false;
+        Invite.settle();
         setTimeout(() => { if (button.isConnected) button.textContent = "Copiar código Pix"; }, 2500);
       } catch {
         // sem permissão de área de transferência: seleciona o código para copiar à mão
@@ -415,6 +418,7 @@
       }
     });
     update();
+    Invite.jarArt($("#don-jar"));
   };
 
   const renderLegal = (id) => {
@@ -530,6 +534,7 @@
     route(back ? scrollOf[location.hash] : 0);
   });
   route();
+  Invite.start();
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));

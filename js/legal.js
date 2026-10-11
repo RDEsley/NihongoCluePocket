@@ -46,7 +46,7 @@ const LEGAL = {
       <p>O tratamento de dados está descrito na <a href="#/privacidade">Política de privacidade</a>.</p>
 
       <h2>7. Código aberto</h2>
-      <p>O código-fonte é público, sob licença MIT, em <a href="${SITE.repositoryUrl}" target="_blank" rel="noreferrer">${SITE.repositoryUrl.replace("https://", "")}</a>. O QR Code do Pix é gerado com a biblioteca qrcode-generator, de Kazuhiko Arase (licença MIT).</p>
+      <p>O código-fonte é público, sob licença MIT, em <a href="${SITE.repositoryUrl}" target="_blank" rel="noreferrer">${SITE.repositoryUrl.replace("https://", "")}</a>. O QR Code do Pix é gerado com a biblioteca qrcode-generator, de Kazuhiko Arase, e as animações usam o lottie-web, da Airbnb (ambas sob licença MIT).</p>
 
       <h2>8. Mudanças e contato</h2>
       <p>Estes termos podem ser atualizados; a data no topo indica a versão em vigor. Aplica-se a legislação brasileira. Dúvidas, correções ou pedidos: ${mail}.</p>`,
@@ -62,6 +62,8 @@ const LEGAL = {
       <h2>2. O que é tratado</h2>
       <h3>Frases salvas e progresso do treino</h3>
       <p>As frases que você marca com a estrela e os cartões que você marca como sabidos ficam guardados <b>somente no seu aparelho</b> (armazenamento local do navegador). Eles não são enviados a nenhum servidor e não passam de um aparelho para outro.</p>
+      <h3>Convite de apoio</h3>
+      <p>O app conta quantas vezes você o abriu, só para mostrar o convite de apoio uma única vez, e lembra se você já o viu ou dispensou. Essa contagem e essas escolhas também ficam somente no seu aparelho.</p>
       <h3>Cópia para uso sem internet</h3>
       <p>Na primeira visita, o navegador guarda no aparelho uma cópia das páginas do app para que ele abra sem conexão.</p>
       <h3>Buscas e valores digitados</h3>

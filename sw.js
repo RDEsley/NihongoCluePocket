@@ -1,13 +1,19 @@
 // Offline: tudo é pré-carregado na primeira visita. Ao mudar qualquer arquivo, suba a versão.
-const CACHE = "nihongo-pocket-v3";
+const CACHE = "nihongo-pocket-v4";
 const ASSETS = [
   "./",
   "css/styles.css",
   "js/data.js",
   "js/legal.js",
   "js/pix.js",
+  "js/invite.js",
   "js/app.js",
   "vendor/qrcode-generator.js",
+  "vendor/lottie_light.min.js",
+  "animations/donation-wave.webp",
+  "animations/donation-wave-still.webp",
+  "animations/donation-jar.json",
+  "animations/donation-heart.json",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",
