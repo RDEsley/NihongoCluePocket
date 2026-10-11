@@ -56,3 +56,11 @@ test("o service worker pré-carrega arquivos que existem", () => {
   const scripts = [...read("index.html").matchAll(/(?:src|href)="((?:js|css)\/[^"]+)"/g)].map((m) => m[1]);
   for (const script of scripts) assert.ok(assets.includes(script), `fora do cache offline: ${script}`);
 });
+
+test("uma versão nova espera o aviso de atualização", () => {
+  const sw = read("sw.js");
+  const install = sw.slice(sw.indexOf('addEventListener("install"'), sw.indexOf('addEventListener("message"'));
+  assert.ok(!install.includes("skipWaiting"), "a instalação não pode trocar de versão sozinha");
+  assert.match(sw, /SKIP_WAITING/);
+  assert.match(read("js/app.js"), /SKIP_WAITING/);
+});

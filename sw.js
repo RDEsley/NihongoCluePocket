@@ -1,5 +1,5 @@
 // Offline: tudo é pré-carregado na primeira visita. Ao mudar qualquer arquivo, suba a versão.
-const CACHE = "nihongo-pocket-v4";
+const CACHE = "nihongo-pocket-v5";
 const ASSETS = [
   "./",
   "css/styles.css",
@@ -21,7 +21,13 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // Uma versão nova fica em espera: a página avisa e só troca quando a pessoa toca em Atualizar
+  // (ou quando o app é fechado e aberto de novo)
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -32,20 +38,15 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Responde do cache na hora e atualiza em segundo plano quando houver rede
+// Responde só com os arquivos desta versão, para que ela não se misture com a próxima.
+// O que não está no cache vem da rede
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET" || new URL(request.url).origin !== location.origin) return;
   event.respondWith(
     caches.open(CACHE).then(async (cache) => {
       const cached = await cache.match(request, { ignoreSearch: true });
-      const fresh = fetch(request)
-        .then((response) => {
-          if (response.ok && !response.redirected) cache.put(request, response.clone());
-          return response;
-        })
-        .catch(() => cached || cache.match("./"));
-      return cached || fresh;
+      return cached || fetch(request).catch(() => cache.match("./"));
     })
   );
 });

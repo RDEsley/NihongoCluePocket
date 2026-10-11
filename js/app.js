@@ -536,7 +536,48 @@
   route();
   Invite.start();
 
+  // ---------- Aviso de atualização ----------
+  // Fechar no X vale só até o app ser fechado: ao abrir de novo, o aviso volta
+  let updateDismissed = false;
+  let updating = false;
+  const offerUpdate = (registration) => {
+    if (updateDismissed || !registration.waiting || $("#update-notice")) return;
+    const notice = document.createElement("aside");
+    notice.id = "update-notice";
+    notice.className = "update-notice";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-label", "Atualização do aplicativo");
+    notice.innerHTML = `<b>Uma nova versão está pronta.</b>
+      <button type="button" class="btn small" data-update>Atualizar</button>
+      <button type="button" class="update-close" aria-label="Dispensar aviso de atualização">×</button>`;
+    notice.querySelector(".update-close").onclick = () => { updateDismissed = true; notice.remove(); };
+    notice.querySelector("[data-update]").onclick = (e) => {
+      if (!registration.waiting) { location.reload(); return; }
+      updating = true;
+      e.currentTarget.disabled = true;
+      e.currentTarget.textContent = "Atualizando…";
+      registration.waiting.postMessage({ type: "SKIP_WAITING" });
+    };
+    document.body.append(notice);
+  };
+
   if ("serviceWorker" in navigator && location.protocol === "https:") {
-    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    // Só recarrega quando a troca foi pedida no aviso, nunca na primeira instalação
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (updating) location.reload(); });
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").then((registration) => {
+        offerUpdate(registration);
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener("statechange", () => {
+            if (worker.state === "installed" && navigator.serviceWorker.controller) offerUpdate(registration);
+          });
+        });
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") registration.update().catch(() => {});
+        });
+      }).catch(() => {});
+    });
   }
 })();
